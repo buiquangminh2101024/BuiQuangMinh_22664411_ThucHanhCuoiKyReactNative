@@ -10,6 +10,7 @@ export default function Index() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Load danh sách phim
   const loadMovies = async () => {
     const data = await findAll();
     setMovies(data);
@@ -22,14 +23,15 @@ export default function Index() {
     })();
   }, []);
 
+  // Toggle watched
   const toggleWatched = async (movie: Movie) => {
-    const updatedMovie: Movie = {
+    const updated: Movie = {
       ...movie,
       watched: movie.watched === 1 ? 0 : 1,
       created_at: new Date(),
     };
 
-    await update(updatedMovie);
+    await update(updated);
     await loadMovies(); // refresh UI
   };
 
@@ -44,6 +46,7 @@ export default function Index() {
   return (
     <View className="flex-1 bg-white p-4">
 
+      {/* Danh sách phim */}
       <FlatList
         data={movies}
         keyExtractor={(item) => item.id.toString()}
@@ -68,7 +71,6 @@ export default function Index() {
                   </Text>
 
                   <Text className="text-gray-600">Năm: {item.year}</Text>
-
                   <Text className="text-gray-600">
                     Lượt xem: {item.watched}
                   </Text>
@@ -80,16 +82,25 @@ export default function Index() {
                   )}
                 </View>
 
+                {/* Icon đã xem */}
                 {watched && (
                   <Text className="text-green-600 text-2xl font-bold">✓</Text>
                 )}
               </View>
+
+              {/* Nút sửa */}
+              <TouchableOpacity
+                className="mt-3 bg-orange-500 px-3 py-2 rounded"
+                onPress={() => router.push(`/edit?id=${item.id}`)}
+              >
+                <Text className="text-white font-bold text-center">Sửa</Text>
+              </TouchableOpacity>
             </TouchableOpacity>
           );
         }}
       />
 
-      {/* Nút thêm phim */}
+      {/* Nút chuyển sang màn Add */}
       <TouchableOpacity
         className="bg-blue-600 p-4 rounded-xl mt-4"
         onPress={() => router.push("/add")}
@@ -98,6 +109,7 @@ export default function Index() {
           ➕ Thêm phim mới
         </Text>
       </TouchableOpacity>
+
     </View>
   );
 }
