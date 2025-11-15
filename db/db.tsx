@@ -98,10 +98,16 @@ export const useExpenseRepository = () => {
 
     const update = async (movie: Movie) => {
         try {
-            await db.runAsync(
-                `update movies set title = ?, year = ?, watched = ?, rating = ?, created_at = ? values where id = ?`,
-                [movie.title, movie.year, movie.watched, movie.rating, movie.created_at.getTime(), movie.id]
-            )
+            if (movie.rating)
+                await db.runAsync(
+                    `update movies set title = ?, year = ?, watched = ?, rating = ?, created_at = ? where id = ?`,
+                    [movie.title, movie.year, movie.watched, movie.rating, movie.created_at.getTime(), movie.id]
+                )
+            else
+                await db.runAsync(
+                    `update movies set title = ?, year = ?, watched = ?, created_at = ? where id = ?`,
+                    [movie.title, movie.year, movie.watched, movie.created_at.getTime(), movie.id]
+                )
         } catch (error) {
             console.error(error);
         }
