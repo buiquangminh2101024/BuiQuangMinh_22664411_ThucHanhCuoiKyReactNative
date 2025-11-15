@@ -1,9 +1,11 @@
-import { View, Text, FlatList } from "react-native";
+import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import { useState, useEffect } from "react";
 import { useExpenseRepository, Movie } from "../../db/db";
+import { useRouter } from "expo-router";
 
 export default function Index() {
   const { findAll } = useExpenseRepository();
+  const router = useRouter();
 
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
@@ -31,6 +33,8 @@ export default function Index() {
 
   return (
     <View className="flex-1 bg-white p-4">
+
+      {/* Danh sách */}
       <FlatList
         data={movies}
         keyExtractor={(item) => item.id.toString()}
@@ -41,11 +45,24 @@ export default function Index() {
             <Text className="text-gray-600">Lượt xem: {item.watched}</Text>
 
             {item.rating !== undefined && (
-              <Text className="text-yellow-600">Đánh giá: {item.rating} ⭐</Text>
+              <Text className="text-yellow-600">
+                Đánh giá: {item.rating} ⭐
+              </Text>
             )}
           </View>
         )}
       />
+
+      {/* Nút chuyển sang Add */}
+      <TouchableOpacity
+        className="bg-blue-600 p-4 rounded-xl mt-4"
+        onPress={() => router.push("/add")}
+      >
+        <Text className="text-center text-white font-bold text-lg">
+          ➕ Thêm phim mới
+        </Text>
+      </TouchableOpacity>
+
     </View>
   );
 }
